@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Create Account -->
+<head>
+    {% include './head.html' %}
+</head>
+
+<body class="body">
+
+    {% include './header.html' %}
+
+    <div class="large-container">
+        <div class="create-account-container">
+    
+            <div class="create-account-form">
+                <h1>Create New User</h1>
+                <form class="registration-form" method="post" action="/create_account">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                    <label for="confirm_password">Confirm Password:</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required>
+                    <button type="submit">Register</button>
+                </form>
+                <a href="" class="login-link">Back to Login</a>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
