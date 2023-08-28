@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        {% include './head.html' %}
+    </head>
+    <body>
+    
+        <h1>Pets</h1>
+        {% if pets %}
+        <ul>
+            {% for pet in pets %}
+            <li>
+                <strong>Name:</strong> {{ pet.name }}<br>
+                <strong>Breed:</strong> {{ pet.breed }}<br>
+                <strong>Weight:</strong> {{ pet.weight }} lbs.<br>
+                <!-- You can list more attributes or information about the pet here -->
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>You don't have any pets yet!</p>
+        {% endif %}
+    
+    </body>
+    
+
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        {% include './head.html' %}
+    </head>
+    <body>
+    
+        <h1>Pets</h1>
+        {% if devices %}
+        <p>
+            {% for device in devices %}
+
+                <strong>Nickname:</strong> {{ device.nickname }}<br>
+                <strong>Device Type:</strong> {{ device.devie_name }}<br>
+
+            {% endfor %}
+        </p>
+        {% else %}
+        <p>You don't have any devices yet!</p>
+        {% endif %}
+    
+    </body>
+    
+
+</html>

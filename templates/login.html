@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include './head.html' %}
+</head>
+
+<body class="body">
+
+    {% include './header.html' %}
+
+    <div class="large-container">
+        <div class="login-container">
+            <form action="/login" method="POST">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+                <br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <br>
+                <button type="submit">Login</button>
+            </form>
+            <a href="/create_account" class="create-account-link">Create New User</a>
+        </div>
+    </div>
+</body>
+
+</html>

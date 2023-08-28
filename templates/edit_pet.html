@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Edit Pet -->
+<head>
+  {% include './head.html' %}
+</head>
+
+<body class="body">
+  
+    {% include './header.html' %}
+
+  
+    <h2>Edit Pet Profile: {{ pet.name }}</h2>
+
+
+    <form action="{{ url_for('edit_pet', pet_id=pet.pet_id) }}" method="post">
+        {{ form.hidden_tag() }}  <!-- This is for CSRF protection. -->
+    
+        <label for="name">Name:</label>
+        {{ form.name() }}
+        
+        <label for="breed">pet Type:</label>
+        {{ form.breed() }}
+
+        <label for="weight">pet Type:</label>
+        {{ form.weight() }}
+        
+        {{ form.submit() }}
+    </form>
+        <!-- ... other pet properties ... -->
+    
+
+    </form>
+    
+</body>
+
+</html>
