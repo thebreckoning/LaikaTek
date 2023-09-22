@@ -3,8 +3,7 @@ This is a web application that runs in a Docker muilti-container environment. th
 of this application is to control/interface with an IoT pet feeder. The Python application
 is build using flask.
 
-##### Tech stack
-
+# Tech stack
 Python
 Docker
 Azure Key vault
@@ -21,7 +20,7 @@ docker ps # Lists running docker containers. Adding the -a flag shows all contai
 
 
 
-### Key vault
+# Key vault
 Keys will be used to secure passwords used within the app for connection strings.
 
 1. create a key vault
