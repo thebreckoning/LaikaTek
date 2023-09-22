@@ -13,13 +13,11 @@ flask
     sqlalchemy
 CSS (with SASS pre-processor)
 
-# Helpful Docker commands:
+# Helpful Docker command
 (some commands may need to be ran with sudo)
 docker-compose up -d --build # This creates the docker containers based on the docker-compose.yml file and starts the application. The -d flag is optional.
 docker-compose down # Shuts down the docker containers. Adding --remove-orphans removes stopped containers and is useful in development.
 docker ps # Lists running docker containers. Adding the -a flag shows all containers including those that are not currently running.
-
-
 
 # Key vault 
 Keys will be used to secure passwords used within the app for connection strings.
@@ -49,6 +47,6 @@ More informtion  on Azure Key Vaults: https://learn.microsoft.com/en-us/cli/azur
 - Final testing
 
 # Currently working on:
-- Getting the Docker app to authenticate to the Azure Key vault.
+- Getting the Docker app to authenticate to the Azure Key vault
 - Establishing a secure database connection using my Azure key
 
