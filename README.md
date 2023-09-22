@@ -46,6 +46,9 @@ More informtion  on Azure Key Vaults: https://learn.microsoft.com/en-us/cli/azur
 - Deploy completed application to cloud environment
 - Final testing
 
+  # Micropython functions to build
+  -
+
 # Currently working on
 - Getting the Docker app to authenticate to the Azure Key vault
 - Establishing a secure database connection using my Azure key
