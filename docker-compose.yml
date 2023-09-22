@@ -1,0 +1,42 @@
+version: '3'
+services:
+  web:
+    build: .
+    container_name: LaikaTek
+    ports:
+      - '8000:8000'
+    depends_on:
+      - db
+    networks:
+      - laikatek_network
+    restart: on-failure
+    environment:
+      - DEBUG=true
+  db:
+    image: mariadb:latest
+    container_name: lt_data
+    environment:
+      MYSQL_ROOT_PASSWORD: changepassword
+      MYSQL_DATABASE: lt_data
+      MYSQL_USER: thebreckoning
+      MYSQL_PASSWORD: changepassword
+    ports:
+      - '3306:3306'
+    volumes:
+      - './data:/var/lib/mysql'
+    networks:
+      - laikatek_network
+  nginx:
+    image: nginx:latest
+    container_name: lt_nginx
+    ports:
+      - '80:80'
+    volumes:
+      - './nginx:/etc/nginx/conf.d'
+    depends_on:
+      - web
+    networks:
+      - laikatek_network
+networks:
+  laikatek_network:
+    driver: bridge

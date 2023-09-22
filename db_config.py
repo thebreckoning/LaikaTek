@@ -4,7 +4,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from models import db, User, Pet, Device
 import mariadb
-
+#from azure.identity import DefaultAzureCredential
+#from azure.keyvault.secrets import SecretClient
 
 ################################################################
 # Create database connection
@@ -13,11 +14,11 @@ import mariadb
 def create_connection():
     try:
         connection = mariadb.connector.connect(
-            host='localhost', 
+            host='lt_data',
             port=3306,
             user='thebreckoning',
             password='changepassword',
-            database='lt_db'
+            database='lt_data'
         )
         return connection
     except mariadb.connector.Error as e:

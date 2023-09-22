@@ -3,15 +3,17 @@
 # db_connection.py
 import mariadb
 from mariadb import Error
+#from azure.identity import DefaultAzureCredential
+#from azure.keyvault.secrets import SecretClient
 
 def create_connection():
     try:
         connection = mariadb.connect(
-            host='localhost', 
+            host='lt_data', 
             port=3306,
             user='thebreckoning',
             password='changepassword',
-            database='lt_db'
+            database='lt_data'
         )
         return connection
     except Error as e:
