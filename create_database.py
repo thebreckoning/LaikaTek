@@ -1,3 +1,6 @@
+
+
+
 from flask_sqlalchemy import SQLAlchemy
 
 # Initialize SQLAlchemy
@@ -41,8 +44,8 @@ def create_tables():
 
 # Function to create the root user
 def create_root_user():
-    # Replace 'mysql://username:password@localhost/lt_db' with your MySQL connection details and the database name 'lt_db'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mariadb://username:password@localhost/lt_db'
+    # Replace 'mysql://username:password@localhost/lt_data' with your MySQL connection details and the database name 'lt_data'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mariadb://username:password@localhost/lt_data'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Initialize the app with the database
@@ -54,6 +57,33 @@ def create_root_user():
     # Create the root user
     root_user = User(
         username='root',
+        password='changepassword',
+        email_address='root@example.com',
+        first_name='Root',
+        last_name='User',
+        phone_number='1234567890',
+        street_address='123 Main St',
+        city='Cityville',
+        state='ST',
+        zip_code=12345
+    )
+    db.session.add(root_user)
+    db.session.commit()
+
+def create_custom_user():
+    # Replace 'mysql://username:password@localhost/lt_data' with your MySQL connection details and the database name 'lt_data'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mariadb://username:password@localhost/lt_data'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    # Initialize the app with the database
+    db.init_app(app)
+
+    # Create the tables
+    create_tables()
+
+    # Create the root user
+    root_user = User(
+        username='thebreckoning',
         password='changepassword',
         email_address='root@example.com',
         first_name='Root',

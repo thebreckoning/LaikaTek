@@ -2,15 +2,19 @@
 # app.py
 
 import os
+import random
+import string
 # Flasky things
 from flask import Flask, cli, render_template, request, redirect, session, url_for, flash, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 #from flask_mysqldb import MySQL
+#from dotenv import load_dotenv
 
 # Other Helpful Libraries
 from sqlalchemy import inspect
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from datetime import timedelta
 
 # Local Modules
@@ -20,13 +24,18 @@ from models import db, User, Pet, Device, FeedTime
 from forms import AddPetForm, EditPetForm, AddDeviceForm, EditDeviceForm, AddFeedTimeForm
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
 
 # Set the configuration from the config.py file
 app.config.from_object('config.Config')
-
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'lt_db'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://thebreckoning:changepassword@db:3306/lt_data'
+#load_dotenv()
 
 db.init_app(app)
 
+with app.app_context():
+    db.create_all()
 
 ##########################################
 # This section is for generating basic
@@ -166,6 +175,7 @@ def create_account():
 
 # Add a new pet
 @app.route('/add_pet', methods=['GET', 'POST'])
+
 def add_pet():
     if request.method == 'POST':
         print("Form Submitted")
@@ -178,7 +188,8 @@ def add_pet():
                 name=request.form['name'],
                 breed=request.form['breed'],
                 weight=int(request.form['weight']),
-                owner=current_user.user_id 
+                owner=current_user.user_id,
+                #pet_profile_pic=choose_random_profile_pic() 
             )
             db.session.add(new_pet)
             db.session.commit()
@@ -203,6 +214,20 @@ def update_pet(pet):
         # Handle exception (you might want to log this error and/or rollback the session)
         db.session.rollback()
         raise e
+def choose_random_profile_pic():
+    profile_pics = [
+        "./templates/images/pet_profile_images/pet_prof_01.jpg",
+        "./templates/images/pet_profile_images/pet_prof_02.jpg",
+        "./templates/images/pet_profile_images/pet_prof_03.jpg",
+        "./templates/images/pet_profile_images/pet_prof_04.jpg",
+        "./templates/images/pet_profile_images/pet_prof_05.jpg",
+        "./templates/images/pet_profile_images/pet_prof_06.jpg",
+        "./templates/images/pet_profile_images/pet_prof_07.jpg",
+        "./templates/images/pet_profile_images/pet_prof_08.jpg",
+        "./templates/images/pet_profile_images/pet_prof_09.jpg"
+    ]
+    return random.choice(profile_pics)
+
 
 @app.route('/edit_pet/<int:pet_id>', methods=['GET', 'POST'])
 def edit_pet(pet_id):
@@ -222,7 +247,7 @@ def edit_pet(pet_id):
         db.session.commit()
         
         update_pet(pet)  # update the pet in the database
-        return redirect(url_for('dashboard'))  # Assuming 'dashboard' is the name of your dashboard route
+        return redirect(url_for('dashboard'))  
 
     return render_template('edit_pet.html', pet=pet, form=form)
 
@@ -305,7 +330,7 @@ def edit_device(device_id):
         db.session.commit()
         
         update_device(device)  # update the device in the database
-        return redirect(url_for('dashboard'))  # Assuming 'dashboard' is the name of your dashboard route
+        return redirect(url_for('dashboard'))  
 
     return render_template('edit_device.html', device=device, form=form)
 
@@ -357,7 +382,6 @@ def add_feed_time(device_id):
     
 def sync_database():
     with app.app_context():
-        # Create all tables based on your models if they don't already exist
         db.create_all()
    
 if __name__ == '__main__':
