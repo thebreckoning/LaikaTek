@@ -1,4 +1,4 @@
-### LaikaTek
+# LaikaTek
 This is a web application that runs in a Docker muilti-container environment. the purpose
 of this application is to control/interface with an IoT pet feeder. The Python application
 is build using flask.
