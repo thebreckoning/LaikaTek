@@ -32,8 +32,8 @@ class Pet(db.Model):
     name = db.Column(db.String(50))
     owner = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     breed = db.Column(db.String(50))
-    weight = db.Column(db.Integer)
-    
+    weight = db.Column(db.Integer) 
+    pet_profile_image = db.Column(db.String(50))   
 
 class Device(db.Model):
     __tablename__ = 'devices'
