@@ -1,11 +1,10 @@
+#!/usr/bin/python3
 
 # database.py
 
 from flask_sqlalchemy import SQLAlchemy
 from models import db, User, Pet, Device
 import mariadb
-#from azure.identity import DefaultAzureCredential
-#from azure.keyvault.secrets import SecretClient
 
 ################################################################
 # Create database connection

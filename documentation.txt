@@ -1,0 +1,14 @@
+Changes made to docker-compose.yml and Dockerfile:
+
+1. docker-compose.yml: No changes were made as it already adhered to best practices.
+
+2. Dockerfile: Removed unnecessary commented lines and ensured proper formatting.
+
+Additional steps:
+
+1. Ensure Docker is installed and running on your system.
+2. Navigate to the lt4 directory.
+3. Run 'docker-compose up' to build and start the containers.
+4. Access the Flask application by visiting http://localhost:8000 in your web browser.
+
+Note: If you need to make changes to the application, update the source code and rebuild the containers by running 'docker-compose up --build'.

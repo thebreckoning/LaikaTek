@@ -9,6 +9,7 @@ from models import User
     #######################################
     # Cerate Account
     #######################################
+    
 class RegistrationForm(FlaskForm):
     username = StringField('username', validators=[DataRequired(), Length(min=4, max=80)])
     email = StringField('email', validators=[DataRequired(), Email()])
@@ -43,6 +44,7 @@ class EditPetForm(FlaskForm):
     #######################################
     # Device Forms
     #######################################
+    
 class AddDeviceForm(FlaskForm):
     nickname = StringField('Nickname:', validators=[DataRequired(), Length(max=50)])
     device_type = SelectField('Device Type:', choices=["Pet Feeder", "Pet Cam", "E-Collar"])

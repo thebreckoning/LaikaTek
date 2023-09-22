@@ -3,8 +3,7 @@
 # db_connection.py
 import mariadb
 from mariadb import Error
-#from azure.identity import DefaultAzureCredential
-#from azure.keyvault.secrets import SecretClient
+
 
 def create_connection():
     try:
