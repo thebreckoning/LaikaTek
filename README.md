@@ -1,15 +1,14 @@
 # LaikaTek
 A "smart" dog feeder that uses a web application to add and store information about your pets, and the devices assigned to your pets. The device itself is controlled by a Raspberry Pi Pico W running MicroPython cfunctions. Instructions such as feeding times are sent from the web app to the device and sensor information is sent back to the web app tobe displayed for the user. The application uses the Flask framework with MariaDB running in a Docker muilti-container environment.
 
-# Tech stack
-
-Python
-Docker
-Azure Key vault
-MariaDB
-flask
-    sqlalchemy
-CSS (with SASS pre-processor)
+# Technologies used
+    - Python
+    - Docker
+    - Azure Key vault
+    - MariaDB
+    - flask
+    - sqlalchemy
+    - CSS (with SASS pre-processor)
 
 # Helpful Docker command
 (some commands may need to be ran with sudo)
@@ -35,6 +34,7 @@ More informtion  on Azure Key Vaults: https://learn.microsoft.com/en-us/cli/azur
 - Tested core app functions such as: new user creation, login, adding/editing a pet, and adding/editing a device
 
 # To Do
+## Web App
 - Write micropython code for device functions
 - Deploy code to micro-processor and test functions on device hardware
 - Refine user session (i.e. set session durration)
@@ -44,8 +44,12 @@ More informtion  on Azure Key Vaults: https://learn.microsoft.com/en-us/cli/azur
 - Deploy completed application to cloud environment
 - Final testing
 
-  # Micropython functions to build
-  -
+## Micropython functions to build
+ - Rotate motor
+ - Wifi sign in
+ - connecto to web app
+ - read food level sensor
+ - receive updates from web app
 
 # Currently working on
 - Getting the Docker app to authenticate to the Azure Key vault
