@@ -9,6 +9,8 @@ RUN pip install pymysql
 
 WORKDIR /app
 
+
+# This will be moved into the requirements.txt file eventually. Keeping here for now for ease of development.
 RUN pip install flask-login==0.6.2
 RUN pip install flask-sqlalchemy==3.0.5
 RUN pip install flask-wtf==1.1.1

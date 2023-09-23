@@ -10,11 +10,11 @@ A "smart" dog feeder that uses a web application to add and store information ab
     - sqlalchemy
     - CSS (with SASS pre-processor)
 
-# Helpful Docker command
-(some commands may need to be ran with sudo)
-docker-compose up -d --build # This creates the docker containers based on the docker-compose.yml file and starts the application. The -d flag is optional.
-docker-compose down # Shuts down the docker containers. Adding --remove-orphans removes stopped containers and is useful in development.
-docker ps # Lists running docker containers. Adding the -a flag shows all containers including those that are not currently running.
+# Helpful Docker commands
+
+sudo docker-compose up -d --build # This creates the docker containers based on the docker-compose.yml file and starts the application. The -d flag is optional.
+sudo docker-compose down # Shuts down the docker containers. Adding --remove-orphans removes stopped containers and is useful in development.
+sudo docker ps # Lists running docker containers. Adding the -a flag shows all containers including those that are not currently running.
 
 # Key vault 
 Keys will be used to secure passwords used within the app for connection strings.
@@ -34,6 +34,7 @@ More informtion  on Azure Key Vaults: https://learn.microsoft.com/en-us/cli/azur
 - Tested core app functions such as: new user creation, login, adding/editing a pet, and adding/editing a device
 
 # To Do
+
 ## Web App
 - Write micropython code for device functions
 - Deploy code to micro-processor and test functions on device hardware
@@ -55,3 +56,6 @@ More informtion  on Azure Key Vaults: https://learn.microsoft.com/en-us/cli/azur
 - Getting the Docker app to authenticate to the Azure Key vault
 - Establishing a secure database connection using my Azure key
 
+# Installation
+
+Fork the code over to your local host and run sudo docker-compose up --build
