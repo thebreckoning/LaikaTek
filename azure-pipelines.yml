@@ -20,6 +20,8 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
+    - script: docker-compose -f $(Build.SourcesDirectory)/docker-compose.yml build
+      displayName: Build using Docker Compose
     - task: Docker@2
       displayName: Build an image
       inputs:
