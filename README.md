@@ -1,7 +1,5 @@
 # LaikaTek
-This is a web application that runs in a Docker muilti-container environment. the purpose
-of this application is to control/interface with an IoT pet feeder. The Python application
-is build using flask.
+A "smart" dog feeder that uses a web application to add and store information about your pets, and the devices assigned to your pets. The device itself is controlled by a Raspberry Pi Pico W running MicroPython cfunctions. Instructions such as feeding times are sent from the web app to the device and sensor information is sent back to the web app tobe displayed for the user. The application uses the Flask framework with MariaDB running in a Docker muilti-container environment.
 
 # Tech stack
 
