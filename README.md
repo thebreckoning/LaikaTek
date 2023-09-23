@@ -35,22 +35,22 @@ More informtion  on Azure Key Vaults: https://learn.microsoft.com/en-us/cli/azur
 
 # To Do
 
-## Web App
-- Write micropython code for device functions
-- Deploy code to micro-processor and test functions on device hardware
-- Refine user session (i.e. set session durration)
-- Separate functions in the app.py file into separate files
-- Establish IoT connection between the web app and device
-- Design and 3d print enclosure for device hardware and other parts for the dog food bowl
-- Deploy completed application to cloud environment
-- Final testing
+    ## Web App
+    - Write micropython code for device functions
+    - Deploy code to micro-processor and test functions on device hardware
+    - Refine user session (i.e. set session durration)
+    - Separate functions in the app.py file into separate files
+    - Establish IoT connection between the web app and device
+    - Design and 3d print enclosure for device hardware and other parts for the dog food bowl
+    - Deploy completed application to cloud environment
+    - Final testing
 
-## Micropython functions to build
- - Rotate motor
- - Wifi sign in
- - connecto to web app
- - read food level sensor
- - receive updates from web app
+    ## Micropython functions to build
+    - Rotate motor
+    - Wifi sign in
+    - connecto to web app
+    - read food level sensor
+    - receive updates from web app
 
 # Currently working on
 - Getting the Docker app to authenticate to the Azure Key vault
