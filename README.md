@@ -12,9 +12,9 @@ A "smart" dog feeder that uses a web application to add and store information ab
 
 # Helpful Docker commands
 
-sudo docker-compose up -d --build # This creates the docker containers based on the docker-compose.yml file and starts the application. The -d flag is optional.
-sudo docker-compose down # Shuts down the docker containers. Adding --remove-orphans removes stopped containers and is useful in development.
-sudo docker ps # Lists running docker containers. Adding the -a flag shows all containers including those that are not currently running.
+sudo docker-compose up --build # This creates the docker containers based on the docker-compose.yml file and starts the application.\
+sudo docker-compose down # Shuts down the docker containers. Adding --remove-orphans removes stopped containers and is useful in development.\
+sudo docker ps # Lists running docker containers. Adding the -a flag shows all containers including those that are not currently running.\
 
 # Key vault 
 Keys will be used to secure passwords used within the app for connection strings.
@@ -42,6 +42,7 @@ More informtion  on Azure Key Vaults: https://learn.microsoft.com/en-us/cli/azur
 - Establish IoT connection between the web app and device
 - Design and 3d print enclosure for device hardware and other parts for the dog food bowl
 - Deploy completed application to cloud environment
+- Clean of and organize functions using Separate files and directories
 - Final testing
 
 ### Micropython functions to build
@@ -53,7 +54,7 @@ More informtion  on Azure Key Vaults: https://learn.microsoft.com/en-us/cli/azur
 
 # Currently working on
 - Getting the Docker app to authenticate to the Azure Key vault
-- Establishing a secure database connection using my Azure key
+- Establishing a secure database connection using Azure keys
 
 # Installation
 
