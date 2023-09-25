@@ -17,7 +17,7 @@ sudo docker-compose up --build # This creates the docker containers based on the
 sudo docker-compose down # Shuts down the docker containers. Adding --remove-orphans removes stopped containers and is useful in development.\
 \
 sudo docker ps # Lists running docker containers. Adding the -a flag shows all containers including those that are not currently running.\
-\
+
 
 # Key vault 
 Keys will be used to secure passwords used within the app for connection strings.

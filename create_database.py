@@ -1,6 +1,8 @@
-#!/usr/bin/python3
+
+
 
 from flask_sqlalchemy import SQLAlchemy
+#from keymaster import db_password
 
 # Initialize SQLAlchemy
 db = SQLAlchemy()
@@ -56,7 +58,7 @@ def create_root_user():
     # Create the root user
     root_user = User(
         username='root',
-        password='changepassword',
+        password='SQLALCHEMY_DATABASE_URI=mysql+pymysql://thebreckoning:db_password@db:3306/lt_data',
         email_address='root@example.com',
         first_name='Root',
         last_name='User',
@@ -83,7 +85,7 @@ def create_custom_user():
     # Create the root user
     root_user = User(
         username='thebreckoning',
-        password='changepassword',
+        password='SQLALCHEMY_DATABASE_URI=mysql+pymysql://thebreckoning:db_password@db:3306/lt_data',
         email_address='root@example.com',
         first_name='Root',
         last_name='User',

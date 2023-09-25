@@ -3,7 +3,7 @@
 import click
 from flask.cli import with_appcontext
 from flask_sqlalchemy import SQLAlchemy
-from models import db  # Import the SQLAlchemy instance from your models.py
+from models import db
 from db_connection import create_connection  
 
 mariadb_connection = create_connection()

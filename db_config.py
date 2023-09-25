@@ -1,10 +1,21 @@
 #!/usr/bin/python3
+# db_config.py
 
-# database.py
 
-from flask_sqlalchemy import SQLAlchemy
-from models import db, User, Pet, Device
+#from models import db, User, Pet, Device
 import mariadb
+import os
+from dotenv import load_dotenv
+from flask_sqlalchemy import SQLAlchemy
+#from keymaster import db_special_password, db_root_password
+
+load_dotenv()
+
+DB_SPECIAL_USER = os.environ.get('DB_SPECIAL_USER')
+DB_SPECIAL_PASSWORD = os.environ.get('DB_SPECIAL_PASSWORD')
+DB_HOST = os.environ.get('DB_HOST')
+DB_HOST_PORT = os.environ.get('DB_HOST_PORT')
+DB_CONTAINER_NAME = os.environ.get('DB_CONTAINER')
 
 ################################################################
 # Create database connection
@@ -13,18 +24,16 @@ import mariadb
 def create_connection():
     try:
         connection = mariadb.connector.connect(
-            host='lt_data',
-            port=3306,
-            user='thebreckoning',
-            password='changepassword',
-            database='lt_data'
+            host='DB_HOST',
+            port='DB_HOST_PORT',
+            user='DB_SPECIAL_USER',
+            password='DB_SPECIAL_PASSWORD',
+            database='DB_NAME'
         )
         return connection
     except mariadb.connector.Error as e:
         print("Error while connecting to MySQL:", e)
         return None
-    
-
 
     #######################################
     # Database things creation and syncing

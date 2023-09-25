@@ -3,19 +3,16 @@
 
 import os
 import random
-import string
-
+#import string
 # Flasky things
 from flask import Flask, cli, render_template, request, redirect, session, url_for, flash, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
-#from flask_mysqldb import MySQL
-#from dotenv import load_dotenv
+from dotenv import load_dotenv
 
 # Other Helpful Libraries
 from sqlalchemy import inspect
 from werkzeug.security import generate_password_hash, check_password_hash
-from werkzeug.utils import secure_filename
 from datetime import timedelta
 
 # Local Modules
@@ -29,7 +26,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI'
 
 # Set the configuration from the config.py file
 app.config.from_object('config.Config')
-#load_dotenv()
+
 
 db.init_app(app)
 
@@ -66,6 +63,8 @@ login_manager.init_app(app)
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+#login_manager.login_view = 'login'
+
 # User account
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
@@ -99,11 +98,12 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
             login_user(user)
-            next_page = request.args.get('next')
+            next_page = request.args.get('next')  # For redirecting to the requested page before login
             return redirect(next_page or 'dashboard')
         else:
             return 'Invalid credentials', 401
-
+     # On successful login:
+  
     return render_template('login.html')
 
 @app.route('/logout')
@@ -210,8 +210,6 @@ def update_pet(pet):
         # Handle exception (you might want to log this error and/or rollback the session)
         db.session.rollback()
         raise e
-    
- # For a future function to assign a random pet profile picture
 def choose_random_profile_pic():
     profile_pics = [
         "./templates/images/pet_profile_images/pet_prof_01.jpg",
@@ -244,7 +242,7 @@ def edit_pet(pet_id):
         pet.weight = form.weight.data
         db.session.commit()
         
-        update_pet(pet)
+        update_pet(pet)  # update the pet in the database
         return redirect(url_for('dashboard'))  
 
     return render_template('edit_pet.html', pet=pet, form=form)
@@ -308,7 +306,7 @@ def update_device(device):
     try:
         db.session.commit()
     except Exception as e:
-        # Handle exception
+        # Handle exception (you might want to log this error and/or rollback the session)
         db.session.rollback()
         raise e
     
@@ -327,7 +325,7 @@ def edit_device(device_id):
         device.device_type = form.device_type.data
         db.session.commit()
         
-        update_device(device)
+        update_device(device)  # update the device in the database
         return redirect(url_for('dashboard'))  
 
     return render_template('edit_device.html', device=device, form=form)
