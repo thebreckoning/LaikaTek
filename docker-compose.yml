@@ -21,6 +21,7 @@ services:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_SPECIAL_USER}
       MYSQL_PASSWORD: ${DB_SPECIAL_PASSWORD}
+      DEBUG: true
     ports:
       - '${DB_HOST_PORT}:${DB_CONTAINER_PORT}'
     volumes:
@@ -35,6 +36,24 @@ services:
       - '${NGINX_HOST_VOLUME}:${NGINX_CONTAINER_VOLUME}'
     depends_on:
       - web
+
+  mqtt:
+      image: eclipse-mosquitto:latest
+      container_name: mqtt_broker
+      ports:
+        - "1883:1883" #default mqtt port
+        - "9001:9001" #default mqtt port for websockets
+      volumes:
+        - .mqtt_data:/mosquitto/data
+        - .mqtt_log:/mosquitto/log
+
+# volumes for mapping data,config and log
+#volumes:
+#    - mqtt_data:
+#    - mqtt_log:
+
+
+
 
 
 

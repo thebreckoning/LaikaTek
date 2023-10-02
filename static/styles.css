@@ -300,4 +300,20 @@ header {
   height: auto;
   border: solid #20aa8c; }
 
+/*********************************************************
+             Forms
+*********************************************************/
+.time-container {
+  display: flex;
+  justify-content: start;
+  /* Distributes the dropdown menus evenly */
+  align-items: center;
+  /* Aligns the dropdown menus vertically in the center */ }
+
+.time-container > div {
+  flex: 1;
+  /* Allows each dropdown menu to take up an equal amount of space */
+  margin: 0 10px;
+  /* Adds some spacing between the dropdown menus */ }
+
 /*# sourceMappingURL=styles.css.map */

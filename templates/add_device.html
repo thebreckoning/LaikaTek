@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--add_device.thml-->
 <html lang="en">
 
 <head>
@@ -9,27 +10,131 @@
   
     {% include './header.html' %}
 
-  <main>
+    <main>
 
-    {% block content %}
-    <h1>Add a New Device</h1>
-    <form method="post">
-        {{ form.hidden_tag() }}
-        <div>
-            {{ form.nickname.label }}<br>
-            {{ form.nickname() }}
-        </div>
-        <div>
-            {{ form.device_type.label }}<br>
-            {{ form.device_type() }}
-        </div>
+        {% block content %}
+        <h1>Add a New Device</h1>
+        <form method="post" id="combined-form">
+            {{ d_form.hidden_tag() }}
+            {{ f_form.hidden_tag() }}
 
-        <div>
-            {{ form.submit() }}
-        </div>
-    </form>
-    {% endblock %}
-  </main>
+            <div>
+                {{ d_form.nickname.label }}<br>
+                {{ d_form.nickname() }}
+            </div>
+            <div>
+                {{ d_form.device_type.label }}<br>
+                {{ d_form.device_type() }}
+            </div>
+
+            <div>
+                <div class="time-container">
+                    <div>
+                        <label for="hours">Hours:</label>
+                        <select name="hours" id="hours">
+                            {% for hour in range(1, 13) %}
+                                <option value="{{ hour }}">{{ hour }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="minutes">Minutes:</label>
+                        <select name="minutes" id="minutes">
+                            {% for minute in range(0, 60) %}
+                                <option value="{{ '%02d'|format(minute) }}">{{ minute }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="ampm">AM/PM:</label>
+                        <select name="ampm" id="ampm">
+                            <option value="AM">AM</option>
+                            <option value="PM">PM</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <label for="feedtimes">Feed Times:</label><br>
+                        <input type="text" name="feedtimes" id="feedtimes" value="{{ f_form.time.data }}" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <input type="submit" value="Add Device">
+            </div>
+        </form>
+        {% endblock %}
+    </main>
+
+    <script>
+        document.getElementById("combined-form").addEventListener("submit", function (e) {
+            // Prevent the default form submission
+            e.preventDefault();
+
+            // Submit both forms
+            document.querySelector("#combined-form input[type=submit]").disabled = true;
+            //document.querySelector("#combined-form input[type=submit]").value = "Adding...";
+            {{ d_form.submit() }}
+            {{ f_form.submit() }}
+        });
+    </script>
+
+    <script>
+        // Select the input fields by their IDs
+        const hoursSelect = document.getElementById('hours');
+        const minutesSelect = document.getElementById('minutes');
+        const amPmSelect = document.getElementById('ampm');
+    
+        // Add change event listeners to each select element
+        hoursSelect.addEventListener('change', updateFeedTimes);
+        minutesSelect.addEventListener('change', updateFeedTimes);
+        amPmSelect.addEventListener('change', updateFeedTimes);
+    
+        // Function to update the feed times input field
+        function updateFeedTimes() {
+            const hours = hoursSelect.value;
+            const minutes = minutesSelect.value;
+            const amPm = amPmSelect.value;
+    
+            // Format the selected values as HH:MM AM/PM
+            const formattedTime = `${hours}:${minutes} ${amPm}`;
+    
+            // Update the input field with the formatted value
+            document.getElementById('feedtimes').value = formattedTime;
+        }
+    </script>
+
+   <!-- <script>
+        // Select the input field by its ID
+        const feedtimesInput = document.getElementById('feedtimes');
+    
+        // Add an input event listener
+        feedtimesInput.addEventListener('input', function () {
+            let inputText = this.value.trim();
+    
+            // Remove any non-digit characters (except ':')
+            inputText = inputText.replace(/[^0-9:]/g, '');
+    
+            // Add leading zero if needed
+            if (inputText.length === 1 && inputText !== '0') {
+                inputText = `0${inputText}`;
+            }
+    
+            // Add a colon between the hours and minutes
+            if (inputText.length > 2 && inputText[2] !== ':') {
+                inputText = inputText.slice(0, 2) + ':' + inputText.slice(2);
+            }
+    
+            // Limit the input to 5 characters (HH:MM)
+            inputText = inputText.slice(0, 5);
+    
+            // Update the input field with the formatted value
+            this.value = inputText;
+        });
+    </script> -->
+    
 </body>
 
 </html>

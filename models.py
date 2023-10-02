@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # models.py
-
+import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 
@@ -39,12 +39,11 @@ class Device(db.Model):
     nickname = db.Column(db.String(50))
     owner = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     device_type = db.Column(db.String(50))
-    feed_times = db.relationship('FeedTime', backref='device', lazy=True)
-
+    feedtimes = db.relationship('FeedTime', backref='device', lazy=True)
+    
 class FeedTime(db.Model):
-    __tablename__ = 'feed_time'
+    __tablename__ = 'feedtimes'
     time_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     device_id = db.Column(db.Integer, db.ForeignKey('devices.device_id'))
-    time = db.Column(db.Time)
-
-                        
+    time = db.Column(db.String(50))
+                             

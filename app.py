@@ -1,11 +1,11 @@
-#!/usr/bin/python3
 # app.py
 
 import os
 import random
+from datetime import timedelta
 #import string
 # Flasky things
-from flask import Flask, cli, render_template, request, redirect, session, url_for, flash, jsonify
+from flask import Flask, cli, render_template, request, redirect, session, url_for, flash, jsonify, Blueprint
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
@@ -13,16 +13,22 @@ from dotenv import load_dotenv
 # Other Helpful Libraries
 from sqlalchemy import inspect
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import timedelta
+
 
 # Local Modules
 from config import Config
 from db_connection import create_connection
 from models import db, User, Pet, Device, FeedTime
-from forms import AddPetForm, EditPetForm, AddDeviceForm, EditDeviceForm, AddFeedTimeForm
+from forms import AddPetForm, EditPetForm
+from device_handler import device_handler_bp, owned_devices
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
+
+
+
+
+app.register_blueprint(device_handler_bp)
 
 # Set the configuration from the config.py file
 app.config.from_object('config.Config')
@@ -67,24 +73,18 @@ def load_user(user_id):
 
 # User account
 @app.route('/dashboard', methods=['GET', 'POST'])
+
 @login_required
 def dashboard():
     pets = owned_pets()
     devices = owned_devices()
-    if current_user.is_authenticated:
-        return render_template('dashboard.html', user=current_user,devices=devices, pets=pets)
-    else:
-        return redirect('/login')
-    
+    if current_user.is_authenticated:      
+        return render_template('dashboard.html', user=current_user, devices=devices, pets=pets)
+    return redirect('/login')
 
 #################################
 # Log in/out
 ################################
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.filter(User.user_id == int(user_id)).first()
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -191,6 +191,7 @@ def add_pet():
             db.session.commit()
             flash('Pet added successfully!', 'success')
             return redirect(url_for('dashboard'))
+        
     return render_template('add_pet.html', form=form)
 
 # Fetch pets
@@ -260,10 +261,10 @@ def delete_pet(pet_id):
 
 # Set the my_pet function
 
-@app.route('/mypets')
-def my_pets():
-    pets = owned_pets()
-    return render_template('mypets.html', user_pets=pets)
+#@app.route('/my_pets')
+#def my_pets():
+#    pets = owned_pets()
+#    return render_template('my_pets.html', user_pets=pets)
 
 
 
@@ -271,97 +272,13 @@ def my_pets():
     # Device Handler functions
     #######################################
 
-# Add a new device
-@app.route('/add_device', methods=['GET', 'POST'])
-def add_device():
-
-    if request.method == 'POST':
-        print("Form Submitted")
-        print(request.form) 
-
-    form = AddDeviceForm()
-    if form.validate_on_submit():
-            new_device = Device(
-                nickname=request.form['nickname'],
-                device_type=request.form['device_type'],
-                owner=current_user.user_id 
-            )
-            db.session.add(new_device)
-            db.session.commit()
-            flash('Device added successfully!', 'success')
-            return redirect(url_for('dashboard'))
-    return render_template('add_device.html', form=form)
-
-# Fetch devices
-def owned_devices():
-    if current_user.is_authenticated:
-        return Device.query.filter_by(owner=current_user.user_id).all()
-    else:
-        return []
-    
-def get_device_by_id(device_id):
-    return Device.query.get(device_id)
-
-def update_device(device):
-    try:
-        db.session.commit()
-    except Exception as e:
-        # Handle exception (you might want to log this error and/or rollback the session)
-        db.session.rollback()
-        raise e
-    
-@app.route('/edit_device/<int:device_id>', methods=['GET', 'POST'])
-def edit_device(device_id):
-    device = Device.query.get(device_id)
-    form = EditDeviceForm()
-
-    if request.method == 'GET':
-        form.nickname.data = device.nickname
-        form.device_type.data = device.device_type
-
-    if form.validate_on_submit():
-        # Save the changes to the device in the database.
-        device.nickname = form.nickname.data
-        device.device_type = form.device_type.data
-        db.session.commit()
-        
-        update_device(device)  # update the device in the database
-        return redirect(url_for('dashboard'))  
-
-    return render_template('edit_device.html', device=device, form=form)
 
 
-@app.route('/delete_device/<int:device_id>', methods=['POST'])
-def delete_device(device_id):
-    device = Device.query.get(device_id)
-    if device:
-        db.session.delete(device)
-        db.session.commit()
-        flash('Device deleted successfully!', 'success')
-    else:
-        flash('Device not found!', 'error')
-    return redirect(url_for('dashboard'))
 
-@app.route('/mydevices')
-def my_devices():
-    devices = owned_devices()
-    return render_template('devices.html', user_devices=devices)
 
-# The feed time values for each device are stored in a separate 
-# database so we can add multiple feed times for each device 
-# with scalability.
 
-@app.route('/add_feed_time/<int:device_id>', methods=['GET', 'POST'])
-def add_feed_time(device_id):
-    form = AddFeedTimeForm()
-    device = Device.query.get_or_404(device_id)
-    if form.validate_on_submit():
-        new_feed_time = FeedTime(time=form.feed_time.data, device_id=device_id)
-        db.session.add(new_feed_time)
-        db.session.commit()
-        flash('Feed time added!')
-        return redirect(url_for('devices_page'))
-    return render_template('add_feed_time.html', form=form)
+
+
 
 
 

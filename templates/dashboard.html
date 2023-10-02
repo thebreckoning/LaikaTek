@@ -1,6 +1,6 @@
 <!DOCTYPE html>
+<!--dashboard.html-->
 <html lang="en">
-<!-- Dashboard -->
 
 <html>
     <head>
@@ -11,6 +11,7 @@
 
         {% include './header.html' %}
         <main>
+            
             <div class="column-container">
                 <div class="column">
                     {% if user %}
@@ -35,7 +36,6 @@
                 </div>
 
                 <div class="pets-column">
-
                     <h1 class="column-title">Pets</h1>
                    <div class="info-container">
                     {% if pets %}
@@ -44,7 +44,7 @@
                                 <div>
                                     <div class="item-profile-image">
                                         <img
-                                        <img src="{{ pet.pet_profile_image if pet.pet_profile_image else url_for('static', filename='default_profile.png') }}" alt="Pet Profile Image">
+                                            src="{{ pet.pet_profile_image if pet.pet_profile_image else url_for('static', filename='default_profile.png') }}" alt="Pet Profile Image"
                                             alt="Profile Image">
                                     </div>
                                 </div>
@@ -55,7 +55,7 @@
                                         <strong>Weight:</strong> {{ pet.weight }} lbs.<br>
                                         <a class="function-link" href="{{ url_for('edit_pet', pet_id=pet.pet_id) }}">Edit</a>
                                         <form action="{{ url_for('delete_pet', pet_id=pet.pet_id) }}" method="post" style="display: inline;">
-                                            <input type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this device?');">
+                                            <input type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this pet?');">
                                         </form>
                                     </p> 
                                 </div>
@@ -69,46 +69,54 @@
                         <a class="function-link" href="/add_pet" class="button">Add Pet</a>
                     </div>
                 </div>
+               
                 <div class="devices-column">
                     <h1 class="column-title">Devices</h1>
                     <div class="info-container">
                         {% if devices %}
-                            {% for device in devices %}
-                                <div class="info-box">
-                                    <div>
-                                        <div class="item-profile-image">
-                                            <img
-                                                src="{{ user.profile_image if user.profile_image else url_for('static', filename='default_profile.png') }}"
-                                                alt="Profile Image">
+                                {% for device in devices %}
+                                    <div class="info-box">
+                                        <div>
+                                            <p>
+                                                <strong>Nickname:</strong> {{ device.nickname }}<br>
+                                                <strong>Device Type:</strong> {{ device.device_type }}<br>
+                                                <strong>Feed Times:</strong>
+                                                <div>
+                                                    <ul>
+                                                        <div>
+                                                            {% for feedtime in device.feedtimes %}
+                                                                <span>{{ feedtime.time }}</span>
+                                                                <!-- Remove feedtime button -->
+                                                                <a href="/delete_feedtime/{{ feedtime.time_id }}" class="button">-</a>
+                                                            {% endfor %}
+                                                            <!-- Add feedtime button -->
+                                                            <a href="/add_feedtime/{{ device.device_id }}" class="button">+</a>
+                                                        </div>
+                                                    </ul>
+                                                </div>
+                                            </p>
                                         </div>
+                                            <div>
+                                                <!-- Edit device button -->
+                                                <a href="/edit_device/{{ device.device_id }}" class="button">Edit</a>
+                                            </div>
                                     </div>
-                                    <div>
-                                        <p>
-                                            <strong>Nickname:</strong> {{ device.nickname }}<br>
-                                            <strong>Device Type:</strong> {{ device.type }}<br>
-                                            <strong>Feed Times:</strong>
-                                                <ul>
-                                                {% for feed_time in device.feed_times %}
-                                                    <li>{{ feed_time.time.strftime('%H:%M') }}</li>
-                                                {% endfor %}
-                                                </ul>
-                                            <a class="function-link" href="{{ url_for('add_feed_time', device_id=device.device_id) }}">Add Feed Time</a>
-                                            <a class="function-link" href="{{ url_for('edit_device', device_id=device.device_id) }}">Edit</a>
-                                            <form action="{{ url_for('delete_device', device_id=device.device_id) }}" method="post" style="display: inline;">
-                                                <input type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this device?');">
-                                            </form>
-                                        </p> 
-                                    </div>
-                                </div>
                                 {% endfor %}
                             {% else %}
-                            <p>You don't have any devices yet!</p>
-                            {% endif %}
-                        </div>
-                        <div>
-                            <a class="function-link" href="/add_device" class="button">Add Device</a>
-                        </div>
+                                <p>You don't have any devices yet!</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <a class="function-link" href="/add_device" class="button">Add Device</a>
+                    </div>
                 </div>
+                
+                
+                
+                
+                
+                
+
             </div>
 
             </div>

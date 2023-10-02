@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, PasswordField, SubmitField, ValidationError, SelectField, TimeField
+from wtforms import StringField, IntegerField, PasswordField, SubmitField, ValidationError, SelectField, TimeField, FieldList, FormField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
+from wtforms.widgets import Input
 from models import User
 
 
@@ -42,17 +43,38 @@ class EditPetForm(FlaskForm):
     #######################################
     # Device Forms
     #######################################
+
+class TimeInput(Input):
+    def __init__(self):
+        super().__init__()
+
+    def __call__(self, field, **kwargs):
+        format = '%I:%M %p'  # Set the format for 12-hour time with AM/PM
+        if field.data:
+            field.data = field.data.strftime(format)
+        return super().__call__(field, **kwargs)
+
 class AddDeviceForm(FlaskForm):
     nickname = StringField('Nickname:', validators=[DataRequired(), Length(max=50)])
     device_type = SelectField('Device Type:', choices=["Pet Feeder", "Pet Cam", "E-Collar"])
-    submit = SubmitField('add_device')
-
+    feedtimes = FieldList(TimeField('Feed Time:', format='%H:%M'), min_entries=1)
+    submit = SubmitField('Add Device')
+    
+class AddFeedTimeForm(FlaskForm):
+    time = TimeField('Feed Time:', widget=TimeInput())
+    am_pm = SelectField('AM/PM:', choices=[('AM', 'AM'), ('PM', 'PM')])
+    submit = SubmitField('Add Feed Time')
+    
 class EditDeviceForm(FlaskForm):
     nickname = StringField('nickname', validators=[DataRequired(), Length(max=50)])
     device_type = SelectField('device_options', choices=["Pet Feeder", "Pet Cam", "E-Collar"])
+    feedtimes = FieldList(FormField(AddFeedTimeForm))
     submit = SubmitField('Update')
 
+class EditFeedTimeForm(FlaskForm):
+    time = TimeField('Feed Time:', widget=TimeInput())
+    #am_pm = SelectField('AM/PM:', choices=[('AM', 'AM'), ('PM', 'PM')])
+    submit = SubmitField('Update Feed Time')
 
-class AddFeedTimeForm(FlaskForm):
-    feed_time = TimeField('Feed Time:', format='%H:%M')
-    submit = SubmitField('Add Feed Time')
+
+
