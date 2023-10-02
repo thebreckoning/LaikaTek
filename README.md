@@ -51,14 +51,18 @@ More informtion  on Azure Key Vaults: https://learn.microsoft.com/en-us/cli/azur
 ### Micropython functions to build
 - Rotate motor
 - Wifi sign in
-- connecto to web app
+- connec to to web app
 - read food level sensor
 - receive updates from web app
 
 # Currently working on
+- Setting up Mosquito MQTT broker
+- configuring wifi setup gateway
+- Building out functions to communicate istructions to device 
 - Getting the Docker app to authenticate to the Azure Key vault
 - Establishing a secure database connection using Azure keys
 
+
 # Installation
 
-Fork the code over to your local host and run sudo docker-compose up --build
+Fork the code over to your local machine and run sudo docker-compose up --build
