@@ -4,15 +4,19 @@ import os
 import random
 from datetime import timedelta
 #import string
+
 # Flasky things
 from flask import Flask, cli, render_template, request, redirect, session, url_for, flash, jsonify, Blueprint
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from flask_login import LoginManager, current_user, login_user, login_required, logout_user 
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
+import paho.mqtt.client as mqtt
 
 # Other Helpful Libraries
 from sqlalchemy import inspect
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename # This was recently removed
+from urllib.parse import parse_qs
 
 
 # Local Modules
@@ -21,6 +25,10 @@ from db_connection import create_connection
 from models import db, User, Pet, Device, FeedTime
 from forms import AddPetForm, EditPetForm
 from device_handler import device_handler_bp, owned_devices
+from mqtt_connect import mqtt_connect_bp, publish_feedtimes #publish_feedtimes_for_all_devices
+
+# Dev things. Delete this when done
+#from mqtt_connect import client_c
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
@@ -29,6 +37,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI'
 
 
 app.register_blueprint(device_handler_bp)
+app.register_blueprint(mqtt_connect_bp)
 
 # Set the configuration from the config.py file
 app.config.from_object('config.Config')
@@ -73,7 +82,6 @@ def load_user(user_id):
 
 # User account
 @app.route('/dashboard', methods=['GET', 'POST'])
-
 @login_required
 def dashboard():
     pets = owned_pets()
@@ -268,13 +276,9 @@ def delete_pet(pet_id):
 
 
 
-    #######################################
-    # Device Handler functions
-    #######################################
-
-
-
-
+    #########################################
+    # MQTT Testing - Send feedtimes to device
+    #########################################
 
 
 

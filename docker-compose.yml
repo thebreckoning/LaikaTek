@@ -1,6 +1,5 @@
 version: '3'
 
-
 services:
   web:
     build: .
@@ -21,7 +20,7 @@ services:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_SPECIAL_USER}
       MYSQL_PASSWORD: ${DB_SPECIAL_PASSWORD}
-      DEBUG: true
+      DEBUG: 'true'
     ports:
       - '${DB_HOST_PORT}:${DB_CONTAINER_PORT}'
     volumes:
@@ -39,21 +38,13 @@ services:
 
   mqtt:
       image: eclipse-mosquitto:latest
-      container_name: mqtt_broker
+      container_name: ${MQTT_CONTAINER}
       ports:
-        - "1883:1883" #default mqtt port
-        - "9001:9001" #default mqtt port for websockets
+        - '${MQTT_HOST_PORT}:${MQTT_CONTAINER_PORT}' #default mqtt port
+        - '${MQTT_WS_HOST_PORT}:${MQTT_WS_CONTAINER_PORT}' #default mqtt port for websockets
       volumes:
-        - .mqtt_data:/mosquitto/data
-        - .mqtt_log:/mosquitto/log
-
-# volumes for mapping data,config and log
-#volumes:
-#    - mqtt_data:
-#    - mqtt_log:
-
-
-
-
-
+        - '${MQTT_HOST_CONF_VOLUME}:${MQTT_CONTAINER_CONF_VOLUME}'
+        - '${MQTT_HOST_DATA_VOLUME}:${MQTT_CONTAINER_DATA_VOLUME}'
+        - '${MQTT_HOST_LOG_VOLUME}:${MQTT_CONTAINER_LOG_VOLUME}'
+        - '${MQTT_HOST_PWFILE_VOLUME}:${MQTT_CONTAINER_PWFILE_VOLUME}'
 

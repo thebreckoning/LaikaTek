@@ -1,6 +1,9 @@
 #!/usr/bin/python3
 # models.py
 import datetime
+import uuid
+import random
+import string
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 
@@ -40,7 +43,7 @@ class Device(db.Model):
     owner = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     device_type = db.Column(db.String(50))
     feedtimes = db.relationship('FeedTime', backref='device', lazy=True)
-    
+        
 class FeedTime(db.Model):
     __tablename__ = 'feedtimes'
     time_id = db.Column(db.Integer, primary_key=True, autoincrement=True)

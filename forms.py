@@ -44,15 +44,15 @@ class EditPetForm(FlaskForm):
     # Device Forms
     #######################################
 
-class TimeInput(Input):
-    def __init__(self):
-        super().__init__()
-
-    def __call__(self, field, **kwargs):
-        format = '%I:%M %p'  # Set the format for 12-hour time with AM/PM
-        if field.data:
-            field.data = field.data.strftime(format)
-        return super().__call__(field, **kwargs)
+#class TimeInput(Input):
+#    def __init__(self):
+#        super().__init__()
+#
+#    def __call__(self, field, **kwargs):
+#        format = '%I:%M %p'  # Set the format for 12-hour time with AM/PM
+#        if field.data:
+#            field.data = field.data.strftime(format)
+#        return super().__call__(field, **kwargs)
 
 class AddDeviceForm(FlaskForm):
     nickname = StringField('Nickname:', validators=[DataRequired(), Length(max=50)])
@@ -61,8 +61,8 @@ class AddDeviceForm(FlaskForm):
     submit = SubmitField('Add Device')
     
 class AddFeedTimeForm(FlaskForm):
-    time = TimeField('Feed Time:', widget=TimeInput())
-    am_pm = SelectField('AM/PM:', choices=[('AM', 'AM'), ('PM', 'PM')])
+    time = TimeField('Feed Time:')
+    #am_pm = SelectField('AM/PM:', choices=[('AM', 'AM'), ('PM', 'PM')])
     submit = SubmitField('Add Feed Time')
     
 class EditDeviceForm(FlaskForm):
@@ -72,7 +72,7 @@ class EditDeviceForm(FlaskForm):
     submit = SubmitField('Update')
 
 class EditFeedTimeForm(FlaskForm):
-    time = TimeField('Feed Time:', widget=TimeInput())
+    time = TimeField('Feed Time:')
     #am_pm = SelectField('AM/PM:', choices=[('AM', 'AM'), ('PM', 'PM')])
     submit = SubmitField('Update Feed Time')
 
