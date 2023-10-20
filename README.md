@@ -32,37 +32,36 @@ Keys will be used to secure passwords used within the app for connection strings
 More informtion  on Azure Key Vaults: https://learn.microsoft.com/en-us/cli/azure/keyvault?view=azure-cli-latest&WT.mc_id=Portal-Microsoft_Azure_KeyVault
 
 # Completed items
-- Built flask framework and templates
-- Set up basic CSS
+- Built flask web app framework and templates
+- Set up basic CSS styling
 - Set up a multi-container environment to run the application in
 - Launched the app successfully in the Docker environment with unsecure database connection
 - Tested core app functions such as: new user creation, login, adding/editing a pet, and adding/editing a device
+- Establish IoT connection between the web app and device
+- Rotate motor
+- receive updates from web app
+- Setting up Mosquito MQTT broker
 
 # To Do
 ### Web App
-- Write micropython code for device functions
 - Deploy code to micro-processor and test functions on device hardware
 - Refine user session (i.e. set session durration)
 - Separate functions in the app.py file into separate files
-- Establish IoT connection between the web app and device
 - Design and 3d print enclosure for device hardware and other parts for the dog food bowl
 - Deploy completed application to cloud environment
-- Clean of and organize functions using Separate files and directories
 - Final testing
 
 ### Micropython functions to build
-- Rotate motor
 - Wifi sign in
 - connec to to web app
 - read food level sensor
-- receive updates from web app
+
 
 # Currently working on
-- Setting up Mosquito MQTT broker
 - configuring wifi setup gateway
-- Building out functions to communicate istructions to device 
 - Getting the Docker app to authenticate to the Azure Key vault
 - Establishing a secure database connection using Azure keys
+- Splitting received portions and feedtime values on the device
 
 
 # Installation
