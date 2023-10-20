@@ -5,12 +5,19 @@ A "smart" dog feeder that uses a web application to add and store information ab
 
 # Technologies used
 - Python
+- MicroPython
 - Docker
 - Azure Key vault
 - MariaDB
+- Nginx
+- Alpine Linux
 - flask
 - sqlalchemy
 - CSS (with SASS pre-processor)
+- MQTT (Mosquitto)
+
+- Raspberry PI Pico W
+- Ender 3 3D printer
 
 # Helpful Docker commands
 
