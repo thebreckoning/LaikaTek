@@ -15,6 +15,7 @@ A "smart" dog feeder that uses a web application to add and store information ab
 - sqlalchemy
 - CSS (with SASS pre-processor)
 - MQTT (Mosquitto)
+- phewap github repo by Simon Pricket https://github.com/simonprickett/phewap.git
 
 - Raspberry PI Pico W
 - Ender 3 3D printer
@@ -51,7 +52,6 @@ More informtion  on Azure Key Vaults: https://learn.microsoft.com/en-us/cli/azur
 
 # To Do
 ### Web App
-- Deploy code to micro-processor and test functions on device hardware
 - Refine user session (i.e. set session durration)
 - Separate functions in the app.py file into separate files
 - Design and 3d print enclosure for device hardware and other parts for the dog food bowl
@@ -59,16 +59,12 @@ More informtion  on Azure Key Vaults: https://learn.microsoft.com/en-us/cli/azur
 - Final testing
 
 ### Micropython functions to build
-- Wifi sign in
-- connec to to web app
 - read food level sensor
 
 
 # Currently working on
-- configuring wifi setup gateway
 - Getting the Docker app to authenticate to the Azure Key vault
 - Establishing a secure database connection using Azure keys
-- Splitting received portions and feedtime values on the device
 
 
 # Installation
