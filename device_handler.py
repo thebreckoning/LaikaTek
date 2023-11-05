@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import request, flash, redirect, url_for, render_template, Blueprint, jsonify
 from flask_login import current_user, login_required
 from models import db, Device, FeedTime
-from forms import AddDeviceForm,AddFeedTimeForm, EditDeviceForm, EditFeedTimeForm
+from forms import AddDeviceForm, AddFeedTimeForm, EditDeviceForm, EditFeedTimeForm, NewDeviceForm
 from sqlalchemy.exc import SQLAlchemyError
 
 
@@ -21,78 +21,83 @@ def owned_devices():
 ####### Adding new devices #######
 @device_handler_bp.route('/add_device', methods=['GET', 'POST'])
 def add_device():
-    d_form = AddDeviceForm()
-    f_form = AddFeedTimeForm()
+    form = NewDeviceForm()
 
     if request.method == 'POST':
-        if d_form.validate_on_submit() and f_form.validate_on_submit():
+        if form.validate_on_submit():
             try:
                 # Create a new device
                 new_device = Device(
-                    nickname=d_form.nickname.data,
-                    device_type=d_form.device_type.data,
+                    nickname=form.nickname.data,
+                    device_type=form.device_type.data,
                     owner=current_user.user_id,
                 )
 
                 db.session.add(new_device)
                 db.session.commit()
 
-                # Directly get the time from the form
-                time_obj = request.form.get('feedtimes')
+                # Retrieve all feed time entries and portions from the form
+                feedtimes = form.feedtimes.data
+                portions_list = form.portions.data  # Assuming you have a field named 'portions' in the form
 
-                # Add feed time to the device
-                new_feedtime = FeedTime(
-                    device_id=new_device.device_id,
-                    time=time_obj,
-                )
-                db.session.add(new_feedtime)
+                # Loop through each feed time and add to the database
+                for idx, time_obj in enumerate(feedtimes):
+                    portions_value = float(portions_list[idx]) if idx < len(portions_list) and portions_list[idx] else None
+
+                    new_feedtime = FeedTime(
+                        device_id=new_device.device_id,
+                        time=time_obj,
+                        portions=portions_value  # Add the portions value here
+                    )
+                    db.session.add(new_feedtime)
+
                 db.session.commit()
 
-                return jsonify({'success': True, 'message': 'Device added successfully!'})
+                flash('Device added successfully!', 'success')
+                return redirect(url_for('dashboard'))
 
             except SQLAlchemyError as e:
                 db.session.rollback()  # Rollback the transaction in case of a database error
                 print(f'Database error: {str(e)}')  # Log the error for debugging purposes
-                return jsonify({'success': False, 'error': 'Database error occurred. Please try again later.'})
+                flash('Database error occurred. Please try again later.', 'error')
+                return redirect(url_for('dashboard'))
         
         else:
-            errors = d_form.errors
-            errors.update(f_form.errors)
-            return jsonify({'success': False, 'error': 'Form validation failed.', 'details': errors})
+            flash('Form validation failed.', 'error')
+            return redirect(url_for('dashboard'))
 
     # If the request method is GET or if there's any other issue, return a message indicating the expected method or error.
     if request.method == 'GET':
-        return render_template('add_device.html', d_form=d_form, f_form=f_form)
-    # If the request method is GET or if there's any other issue, return a message indicating the expected method or error.
-    if request.method == 'GET':
-        return render_template('add_device.html', d_form=d_form, f_form=f_form)
+        return render_template('add_device.html', form=form)
 
-    # return jsonify({'success': False, 'message': 'Expected POST request method.'})
 
 ####### Editing existing devices ########
 
-from flask import jsonify
+
 
 @device_handler_bp.route('/edit_device/<int:device_id>', methods=['GET', 'POST'])
 def edit_device(device_id):
     device = Device.query.get(device_id)
     if not device:
-        return jsonify({'success': False, 'error': 'Device not found'}), 404
+        flash('Device not found', 'error')
+        return redirect(url_for('dashboard'))  # Assuming 'dashboard' is the route name for the dashboard page
+
+    form = EditDeviceForm(obj=device)  # Populate the form with device details
 
     if request.method == 'POST':
-        form = EditDeviceForm(request.form, obj=device)  # Populate the form with request data
         if form.validate():
-            update_device_details(device, form)
-            update_feedtimes(device_id, request.form.getlist('feedtimes'))
-            
             try:
+                form.populate_obj(device)  # Update the device object with form data
                 db.session.commit()
-                return jsonify({'success': True, 'message': 'Device updated successfully!'})
+                flash('Device updated successfully!', 'success')
+                return redirect(url_for('dashboard'))  # Redirect back to the dashboard after successful update
             except SQLAlchemyError as e:
                 db.session.rollback()
-                return jsonify({'success': False, 'error': 'Database error occurred. Please try again later.'}), 500
-        else:
-            return jsonify({'success': False, 'error': 'Form validation failed', 'form_errors': form.errors}), 400
+                flash(f'Error updating device: {str(e)}', 'error')
+
+    # For a GET request or if there's an error in the POST request, render the edit device template
+    return render_template('edit_device.html', form=form, device=device)
+
 
     # For a GET request, return the device details and associated feed times
     existing_feedtimes = [feedtime.time for feedtime in device.feedtimes]
@@ -102,6 +107,24 @@ def edit_device(device_id):
         'device_type': device.device_type,
         'feedtimes': existing_feedtimes
     })
+
+
+@device_handler_bp.route('/update_feedtime/<int:feedtime_id>', methods=['POST'])
+def update_feedtime(feedtime_id):
+    feedtime = FeedTime.query.get(feedtime_id)
+    if not feedtime:
+        return jsonify({"error": "FeedTime not found"}), 404
+
+    # Get the updated time from the request
+    new_time = request.form.get('time')
+    if not new_time:
+        return jsonify({"error": "Time not provided"}), 400
+
+    # Update the feedtime in the database
+    feedtime.time = new_time
+    db.session.commit()
+
+    return jsonify({"message": "FeedTime updated successfully"})
 
 
 # Update the device details in the database
@@ -143,13 +166,22 @@ def delete_device(device_id):
     device = Device.query.get(device_id)
     if device:
         try:
+            # Delete associated feedtimes and portions
+            for feedtime in device.feedtimes:
+                db.session.delete(feedtime)
+                # Assuming each feedtime has an associated portion, delete it
+
+
+            # Delete the device itself
             db.session.delete(device)
             db.session.commit()
-            return jsonify({'success': True, 'message': 'Device deleted successfully!'})
+            flash('Device and its associated feedtimes and portions deleted successfully!', 'success')  # Flash a success message
         except Exception as e:
-            return jsonify({'success': False, 'message': f'Error deleting device: {str(e)}'})
+            flash(f'Error deleting device: {str(e)}', 'error')  # Flash an error message
     else:
-        return jsonify({'success': False, 'message': 'Device not found!'})
+        flash('Device not found!', 'error')  # Flash an error message
+
+    return redirect(url_for('dashboard'))  # Redirect to the dashboard route
 
 
 ###### Add feed times ######
@@ -159,19 +191,31 @@ def add_feedtime(device_id: any):
     form = AddFeedTimeForm()
     if form.validate_on_submit():
         try:
-            new_feedtime = FeedTime(
-                device_id=device_id,
-                time=form.time.data,
-            )
-            db.session.add(new_feedtime)
+            # Retrieve all feed time entries and portions from the form
+            feedtimes = request.form.getlist('feedtimes')
+            portions_list = request.form.getlist('portions')  # Assuming you have a field named 'portions' in the form
+
+            # Loop through each feed time and add to the database
+            for idx, time_obj in enumerate(feedtimes):
+                portions_value = float(portions_list[idx]) if portions_list[idx] else None
+                new_feedtime = FeedTime(
+                    device_id=device_id,
+                    time=time_obj,
+                    portions=portions_value  # Add the portions value here
+                )
+                db.session.add(new_feedtime)
+
             db.session.commit()
-            return jsonify({'success': True, 'message': 'Feed time added successfully!'})
+            return jsonify({'success': True, 'message': 'Feed times added successfully!'})
+
         except SQLAlchemyError as e:
             db.session.rollback()
             print(f'Database error: {str(e)}')
             return jsonify({'success': False, 'message': 'Database error occurred. Please try again later.'})
+
     else:
         return jsonify({'success': False, 'message': 'Form validation failed.', 'details': form.errors})
+
 
 ### Deleting feed times ###
 

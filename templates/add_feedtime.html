@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!--base.html-->
+<html lang="en">
+  <!-- Base template-->
+
+<head>
+  {% include './head.html' %}
+</head>
+
+<body class="body">
+
+    {% include './header.html' %}
+
+  <main>
+
+    <div class="time-container">
+        <div>
+            <label for="hours">Hours:</label>
+            <select name="hours" id="hours">
+                {% for hour in range(1, 13) %}
+                    <option value="{{ hour }}">{{ hour }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="minutes">Minutes:</label>
+            <select name="minutes" id="minutes">
+                {% for minute in range(0, 60) %}
+                    <option value="{{ '%02d'|format(minute) }}">{{ minute }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="ampm">AM/PM:</label>
+            <select name="ampm" id="ampm">
+                <option value="AM">AM</option>
+                <option value="PM">PM</option>
+            </select>
+        </div>
+    </div>
+    <div>
+        <div>
+            <label for="feedtimes">Feed Times:</label><br>
+            <input type="text" name="feedtimes" id="feedtimes" value="{{ f_form.time.data }}" readonly>
+        </div>
+    </div>
+</div>
+
+<div>
+    <input type="submit" value="Add Device">
+</div>
+
+  </main>
+
+  {% include './footer.html' %}
+
+</body>
+
+</html>

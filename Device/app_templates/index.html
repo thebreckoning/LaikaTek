@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LaikaTek</title>
+    </head>
+    <body>
+        <h1>Success</h1>
+        <p>Your LaikaTek device is connected to the network!</p>
+        <br/>
+        <p>Device name: <span id="deviceName">[Loading device name...]</span></p>
+        <p>Current time: <span id="currentTime">[Loading current time...]</span></p><br/>
+        <h2>Feed Times</h2>
+            <ul id="feedTimes">
+                <!-- Feed times will be displayed here -->
+            </ul>
+        <br/>
+        <button id="resetBtn">Reset Wifi</button>
+
+        <script>
+            document.getElementById('resetBtn').onclick = function() {
+                const isConfirmed = confirm('Are you sure you want to reset the WiFi?');
+                if (isConfirmed) {
+                    window.location.href = '/reset';
+                }
+            };
+        </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Send a GET request to the /app_get_device_name endpoint
+                fetch('/app_get_device_name')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.text();
+                    })
+                    .then(deviceName => {
+                        // Display the device name in an element with the ID 'deviceName'
+                        document.getElementById('deviceName').textContent = deviceName;
+                    })
+                    .catch(error => {
+                        console.error('There has been a problem with your fetch operation:', error);
+                    });
+
+                // Send a GET request to the /app_get_feedtimes endpoint
+                fetch('/app_get_feedtimes')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(feedTimes => {
+                        // Display the feed times in an element with the ID 'feedTimes'
+                        const feedTimesElement = document.getElementById('feedTimes');
+                        feedTimes.forEach(feedTime => {
+                            const li = document.createElement('li');
+                            const time = feedTime.time;
+                            const portion = feedTime.portion;
+                            const hoursMinutes = time.split(':');
+                            const hours = parseInt(hoursMinutes[0]);
+                            const minutes = parseInt(hoursMinutes[1]);
+                            const ampm = hours >= 12 ? 'pm' : 'am';
+                            const formattedHours = hours % 12 || 12;
+                            const formattedTime = `${formattedHours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+                            li.textContent = `Feedtime: ${formattedTime}, Portions: ${portion}`;
+                            feedTimesElement.appendChild(li);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('There has been a problem with your fetch operation:', error);
+                    });
+
+                // Display the current time
+                const currentTimeElement = document.getElementById('currentTime');
+                const now = new Date();
+                const hours = now.getHours();
+                const minutes = now.getMinutes();
+                const ampm = hours >= 12 ? 'pm' : 'am';
+                const formattedHours = hours % 12 || 12;
+                const formattedTime = `${formattedHours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+                currentTimeElement.textContent = formattedTime;
+            });
+        </script>
+    </body>
+</html>
+

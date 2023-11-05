@@ -32,19 +32,20 @@ services:
     ports:
       - '${NGINX_HOST_PORT}:${NGINX_CONTAINER_PORT}'
     volumes:
-      - '${NGINX_HOST_VOLUME}:${NGINX_CONTAINER_VOLUME}'
+      - './nginx/conf.d:/etc/nginx/conf.d'
+      - './nginx/html:/usr/share/nginx/html'
+      #- '${NGINX_HOST_VOLUME}:${NGINX_CONTAINER_VOLUME}'
     depends_on:
       - web
 
   mqtt:
-      image: eclipse-mosquitto:latest
-      container_name: ${MQTT_CONTAINER}
-      ports:
-        - '${MQTT_HOST_PORT}:${MQTT_CONTAINER_PORT}' #default mqtt port
-        - '${MQTT_WS_HOST_PORT}:${MQTT_WS_CONTAINER_PORT}' #default mqtt port for websockets
-      volumes:
-        - '${MQTT_HOST_CONF_VOLUME}:${MQTT_CONTAINER_CONF_VOLUME}'
-        - '${MQTT_HOST_DATA_VOLUME}:${MQTT_CONTAINER_DATA_VOLUME}'
-        - '${MQTT_HOST_LOG_VOLUME}:${MQTT_CONTAINER_LOG_VOLUME}'
-        - '${MQTT_HOST_PWFILE_VOLUME}:${MQTT_CONTAINER_PWFILE_VOLUME}'
-
+    image: eclipse-mosquitto:latest
+    container_name: ${MQTT_CONTAINER}
+    ports:
+      - '${MQTT_HOST_PORT}:${MQTT_CONTAINER_PORT}'
+      - '${MQTT_WS_HOST_PORT}:${MQTT_WS_CONTAINER_PORT}'
+    volumes:
+      - '${MQTT_HOST_CONF_VOLUME}:${MQTT_CONTAINER_CONF_VOLUME}'
+      - '${MQTT_HOST_DATA_VOLUME}:${MQTT_CONTAINER_DATA_VOLUME}'
+      - '${MQTT_HOST_LOG_VOLUME}:${MQTT_CONTAINER_LOG_VOLUME}'
+      - '${MQTT_HOST_PWFILE_VOLUME}:${MQTT_CONTAINER_PWFILE_VOLUME}'

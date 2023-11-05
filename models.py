@@ -49,4 +49,5 @@ class FeedTime(db.Model):
     time_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     device_id = db.Column(db.Integer, db.ForeignKey('devices.device_id'))
     time = db.Column(db.String(50))
+    portions = db.Column(db.Float)
                              
