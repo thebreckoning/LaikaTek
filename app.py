@@ -11,6 +11,7 @@ from flask_login import LoginManager, current_user, login_user, login_required, 
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import paho.mqtt.client as mqtt
+from flask_socketio import SocketIO
 
 # Other Helpful Libraries
 from sqlalchemy import inspect
@@ -25,7 +26,7 @@ from db_connection import create_connection
 from models import db, User, Pet, Device, FeedTime
 from forms import AddPetForm, EditPetForm
 from device_handler import device_handler_bp, owned_devices
-from mqtt_connect import mqtt_connect_bp, publish_feedtimes #publish_feedtimes_for_all_devices
+from mqtt_connect import mqtt_client, mqtt_connect_bp
 
 # Dev things. Delete this when done
 #from mqtt_connect import client_c
@@ -33,7 +34,7 @@ from mqtt_connect import mqtt_connect_bp, publish_feedtimes #publish_feedtimes_f
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
 
-
+socketio = SocketIO(app)
 
 
 app.register_blueprint(device_handler_bp)
@@ -80,15 +81,26 @@ def load_user(user_id):
 
 #login_manager.login_view = 'login'
 
-# User account
+
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
     pets = owned_pets()
     devices = owned_devices()
+
+    # Access MQTT data
+    mqtt_data = mqtt_client.mqtt_data
+
+    # Add logic to match devices with MQTT data
+    for device in devices:
+        if device.nickname in mqtt_data:
+            device.food_level = mqtt_data[device.nickname]  
+
     if current_user.is_authenticated:      
-        return render_template('dashboard.html', user=current_user, devices=devices, pets=pets)
-    return redirect('/login')
+        return render_template('dashboard.html', user=current_user, devices=devices, pets=pets, mqtt_data=mqtt_data)
+    return redirect(url_for('login'))
+
+
 
 #################################
 # Log in/out
@@ -279,10 +291,28 @@ def delete_pet(pet_id):
     #########################################
     # MQTT Testing - Send feedtimes to device
     #########################################
+'''
+@socketio.on('start_listener')
+def handle_start_listener():
+    listen_for_mqtt_messages()
+    emit('listener_status', {'status': 'started'})
 
+def on_message(client, userdata, message):
+    # Process the message payload as needed
+    processed_message = message.payload.decode()
+    socketio.emit('mqtt_data', {'message': processed_message})
 
+def listen_for_mqtt_messages():
+    client = mqtt.Client()
+    client.on_message = on_message
 
-
+    try:
+        client.connect(MQTT_BROKER, MQTT_PORT, 60)
+        client.subscribe("sensor_data/tester")
+        client.loop_start()
+    except Exception as e:
+        print(f"Error connecting to MQTT Broker: {e}")
+'''
 
 
 
@@ -303,5 +333,5 @@ def sync_database():
    
 if __name__ == '__main__':
     sync_database()
-    app.run()
+    socketio.app.run()
     

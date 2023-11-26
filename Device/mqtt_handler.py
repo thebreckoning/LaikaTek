@@ -1,4 +1,4 @@
-import json
+import ujson
 from umqtt.simple import MQTTClient
 import uasyncio as asyncio
 
@@ -16,7 +16,7 @@ class MQTTHandler:
     def connect(self):
         try:
             with open(self.secrets_file, 'r') as f:
-                secrets = json.load(f)
+                secrets = ujson.load(f)
         except Exception as e:
             print(f"Error loading secrets file: {e}")
             return
@@ -29,7 +29,7 @@ class MQTTHandler:
             password=secrets.get('password'),
             keepalive=secrets.get('keepalive'),
             ssl=secrets.get('ssl'),
-            ssl_params=json.loads(secrets.get('ssl_params', '{}'))
+            ssl_params=ujson.loads(secrets.get('ssl_params', '{}'))
         )
         try:
             self.client.connect()
@@ -49,7 +49,7 @@ class MQTTHandler:
         device_name = None
         try:
             with open(self.wifi_file, 'r') as f:
-                wifi_config = json.load(f)
+                wifi_config = ujson.load(f)
             device_name = wifi_config['device_name']
             print(f"Device name: {device_name}")
         except Exception as e:
@@ -80,37 +80,35 @@ class MQTTHandler:
 
         print("Received message on topic {}: {}".format(topic, msg_str))
 
+        # Handle message processing asynchronously
+        asyncio.create_task(self.handle_message(topic, msg_str))
+
+    async def handle_message(self, topic, msg_str):
         try:
             with open(self.feed_file, 'w') as f:
-                json.dump(msg_str, f)
-                print("Feed file updated!")
+                ujson.dump(msg_str, f)
+            print("Feed file updated!")
         except Exception as e:
             print("Error writing to file: {}".format(e))
 
-        # Create parsed_feedtimes.json file after updating feed_file
-        print("Calling create_parsed_feedtimes")
-        self.create_parsed_feedtimes()
-        print("Finished calling create_parsed_feedtimes")
+        await self.create_parsed_feedtimes()
 
         if self.callback is not None:
             print("Calling callback")
-            self.callback(topic, msg)
+            self.callback(topic, msg_str)  # Pass both topic and msg_str to the callback
             print("Finished calling callback")
 
-            
-    def create_parsed_feedtimes(self):
+    async def create_parsed_feedtimes(self):
         print("Creating parsed_feedtimes.json file")
         try:
-            parsed_feedtimes = self.app_parse_feedtimes()
-            print("Parsed feedtimes: ", parsed_feedtimes)
+            parsed_feedtimes = await self.app_parse_feedtimes()
             with open('parsed_feedtimes.json', 'w') as f:
-                json.dump(parsed_feedtimes, f)
+                ujson.dump(parsed_feedtimes, f)
             print("Finished creating parsed_feedtimes.json file")
         except Exception as e:
             print("Error in create_parsed_feedtimes: ", e)
 
-
-    def app_parse_feedtimes(self):
+    async def app_parse_feedtimes(self):
         try:
             with open('feedtimes.json', 'r') as f:
                 data = f.read()
@@ -127,20 +125,4 @@ class MQTTHandler:
 
         #print("Parsed feedtimes: ", parsed_feedtimes)
         return parsed_feedtimes
-
-    def app_get_feedtimes(self, request):
-        print("Getting parsed_feedtimes.json file")
-        try:
-            with open('parsed_feedtimes.json', 'r') as f:
-                parsed_feedtimes = json.load(f)
-        except Exception as e:
-            print(f"Error reading parsed_feedtimes.json: {e}")
-            return self.server.Response("Error reading parsed_feedtimes.json", status=500)
-
-        resp = self.server.Response(json.dumps(parsed_feedtimes))
-        resp.headers['Content-Type'] = 'application/json'
-        return resp
-
-    def setup_routes(self):
-        self.server.add_route("/app_get_feedtimes", handler=self.app_get_feedtimes, methods=["GET"])
 

@@ -1,22 +1,16 @@
 <!DOCTYPE html>
 <!--edit_device.html-->
 <html lang="en">
-
 <head>
     {% include './head.html' %}
 </head>
-
 <body class="body">
-  
     {% include './header.html' %}
-
     <main>
-
         {% block content %}
         <h1>Edit Device: {{ device.nickname }}</h1>
         <form method="post" id="combined-form">
             {{ form.hidden_tag() }}
-
             <div>
                 {{ form.nickname.label }}<br>
                 {{ form.nickname() }}
@@ -27,12 +21,21 @@
             </div>
 
             <div id="time-entries-container">
-                {% for feedtime in device.feedtimes %}
+                {% for feedtime in form.feedtimes %}
                 <div class="time-container">
-                    {{ feedtime.label }} {{ feedtime.time }}
-                    <a href="{{ url_for('device_handler.delete_feedtime', feedtime_id=feedtime.time_id) }}">Delete</a>
-                    <!-- Add the Edit button here -->
-                    <button class="edit-feedtime-btn" data-feedtime-id="{{ feedtime.time_id }}">Edit</button>
+                    {{ feedtime.label }} {{ feedtime() }}
+                    {% if feedtime.minutes %}
+                        {{ feedtime.minutes.label }} {{ feedtime.minutes() }}
+                    {% endif %}
+                    {% if feedtime.ampm %}
+                        {{ feedtime.ampm.label }} {{ feedtime.ampm() }}
+                    {% endif %}
+                    <label for="portions-{{ loop.index0 }}">Portions:</label>
+                    <select name="portions-{{ loop.index0 }}">
+                        {% for portion in range(1, 13) %}
+                            <option value="{{ portion * 0.5 }}">{{ portion * 0.5 }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 {% endfor %}
             </div>
@@ -48,65 +51,26 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            let timeEntryCount = document.querySelectorAll('.time-container').length;  // Counter for time entries
-    
-            // Reference to the Add Time Entry button
+            let timeEntryCount = document.querySelectorAll('.time-container').length;
             const addTimeEntryButton = document.getElementById('addTimeEntryButton');
-        
-            // Event listener for the Add Time Entry button
             addTimeEntryButton.addEventListener('click', function() {
-                // Clone the first time-container
-                const newTimeContainer = document.querySelector('.time-container').cloneNode(true);
-    
-                // Update the IDs and names of the cloned elements with null checks
-                const feedtimeElement = newTimeContainer.querySelector('[name^="feedtimes-"]');
-                if (feedtimeElement) {
-                    feedtimeElement.name = `feedtimes-${timeEntryCount}`;  // Adjust the name to have a unique index
-                } else {
-                    console.error("Couldn't find an element with a name starting with 'feedtimes-' inside the newTimeContainer.");
-                }
-    
-                // Append the new time-container to the container
-                document.getElementById('time-entries-container').appendChild(newTimeContainer);
-    
-                // Increment the counter
+                const timeEntriesContainer = document.getElementById('time-entries-container');
+                const newTimeContainer = document.createElement('div');
+                newTimeContainer.className = 'time-container';
+                newTimeContainer.innerHTML = `
+                    <!-- Add the HTML structure for feedtime, minutes, ampm, and portions similar to the server-rendered structure -->
+                    <input type="time" name="feedtimes-${timeEntryCount}">
+                    <label for="portions-${timeEntryCount}">Portions:</label>
+                    <select name="portions-${timeEntryCount}">
+                        {% for portion in range(1, 13) %}
+                            <option value="{{ portion * 0.5 }}">{{ portion * 0.5 }}</option>
+                        {% endfor %}
+                    </select>
+                `;
+                timeEntriesContainer.appendChild(newTimeContainer);
                 timeEntryCount++;
-            });
-
-            // Event listener for the Edit button
-            document.querySelectorAll('.edit-feedtime-btn').forEach(function(button) {
-                button.addEventListener('click', function() {
-                    const feedtimeId = this.getAttribute('data-feedtime-id');
-                    // Show the edit-feedtime-container or modal here
-                    // Populate the time entries function with the current feedtime
-                    // ...
-                });
             });
         });
     </script>
-    
-    <script>
-    function updateFeedTimeForContainer(container) {
-        const hoursSelect = container.querySelector('[name^="hours-"]');
-        const minutesSelect = container.querySelector('[name^="minutes-"]');
-        const amPmSelect = container.querySelector('[name^="ampm-"]');
-    
-        const hours = hoursSelect.value;
-        const minutes = minutesSelect.value;
-        const amPm = amPmSelect.value;
-    
-        // Convert the 12-hour format to 24-hour format
-        let hour24 = (amPm === 'PM' && hours !== '12') ? parseInt(hours) + 12 : hours;
-        hour24 = (amPm === 'AM' && hours === '12') ? '00' : hour24;
-    
-        // Format the selected values as HH:MM
-        const formattedTime = `${hour24}:${minutes}`;
-    
-        // Update the hidden input field with the formatted value
-        container.querySelector('.feedtime-hidden-input').value = formattedTime;
-    }
-    </script>
-
 </body>
-
 </html>

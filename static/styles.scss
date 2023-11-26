@@ -272,50 +272,25 @@ header {
   text-align: center;
 }
 
-.column {
-  float: left;
-  margin: 10px;
-  width: 33.33%;
-  padding: 15px;
-  /*width: 30%;*/
-  height: auto;
-  border-style: double;
-  border-width: 3px;
-  border-color: $primary-color;
-  max-width: 32%;
-
+.column-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
 }
 
-.pets-column {
-  /*display: flex;
-  column-count: 2; */
-  flex: 1;    
-  flex-wrap: wrap; 
-  justify-content: space-between; 
+.pets-column, .devices-column {
+  flex: 1;
   margin: 10px;
-  /*width: 420px; */
   padding: 15px;
   border-style: double;
   border-width: 3px;
-  border-color: $primary-color;
-  max-width: 32%;
-
+  border-color: #20aa8c;
 }
 
-.devices-column {
-  /*display: flex;
-  column-count: 2; */
-  flex: 1;    
-  flex-wrap: wrap; 
-  justify-content: space-between; 
-  margin: 10px;
- /*width: 420px; */
-  padding: 15px;
-  border-style: double;
-  border-width: 3px;
-  border-color: $primary-color;
-  max-width: 32%;
-
+@media screen and (max-width: 600px) {
+  .pets-column, .devices-column {
+    max-width: 100%;
+  }
 }
 
 /* Clear floats after the columns */
@@ -325,11 +300,6 @@ header {
   clear: both;
 }
 
-@media screen and (max-width:600px) {
-  .column, .pets-column, .devices-column {
-    max-width: 100%;
-  }
-}
 
 /* Boxes to display pet and device info on dashboard */
 .info-box {
@@ -376,4 +346,94 @@ header {
 .time-container > div {
   flex: 1; /* Allows each dropdown menu to take up an equal amount of space */
   margin: 0 10px; /* Adds some spacing between the dropdown menus */
+}
+
+.create-account-block {
+  .create-account-form {
+      text-align: right; // Align form elements to the right
+  }
+
+  .form-group {
+      display: flex;
+      flex-direction: column-reverse; // Stack label and input vertically, reversing their order
+      align-items: flex-end; // Align items to the right
+      margin-bottom: 15px; // Add some spacing between form groups
+      label {
+          margin-bottom: 5px; // Add spacing below labels
+      }
+      input {
+          width: 100%; // Make input fields full-width
+          padding: 5px; // Add padding to input fields
+      }
+  }
+
+  button[type="submit"] {
+      align-self: flex-start; // Align the submit button to the left
+  }
+}
+
+.add-device {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center vertically */
+  align-items: center; /* Center horizontally */
+  margin-top: 25px; /* 25px below the header */
+  
+  h1 {
+      text-align: center; /* Center the heading */
+  }
+
+  form {
+      text-align: left; /* Align form elements to the left */
+
+      .form-group {
+          display: flex;
+          flex-direction: row; /* Arrange label and input horizontally */
+          justify-content: space-between; /* Push input fields to the right */
+          align-items: center;
+          margin-bottom: 15px;
+
+          label {
+              margin-right: 10px; /* Add some spacing between label and input */
+          }
+
+          input {
+              width: 100%;
+              padding: 5px;
+              text-align: right; /* Align text inside input fields to the right */
+          }
+      }
+
+      button[type="submit"] {
+          align-self: flex-start; /* Align the submit button to the left */
+      }
+  }
+}
+
+.banner-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 25px;
+  height: 500px;
+  width: auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-width: 3px;
+  border-style: solid;
+  border-color: $primary-color;
+  background-image: url('/static/images/the-pack.png');
+  background-size: contain; /* Ensures the entire image is visible */
+  background-repeat: no-repeat;
+  background-position: center center;
+  overflow: hidden; /* Ensure the image doesn't overflow the container */
+}
+
+.banner-image {
+  background-image: url('/static/images/the-pack.png');
+  background-size: contain; /* Ensures the entire image is visible */
+  background-repeat: no-repeat;
+  background-position: center center;
+  height: 100%; /* Set the height to 100% of the parent container */
+  width: auto; /* Allow the image to adjust its width proportionally */
 }

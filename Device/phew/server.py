@@ -345,15 +345,13 @@ def redirect(url, status = 301):
 def serve_file(file):
   return FileResponse(file)
 
-async def run(host="0.0.0.0", port=80):
-    logging.info("> starting web server on port {}".format(port))
-    server = await asyncio.start_server(_handle_request, host, port)
-    async with server:
-        await server.serve_forever()
+def run(host = "0.0.0.0", port = 80):
+  logging.info("> starting web server on port {}".format(port))
+  loop.create_task(uasyncio.start_server(_handle_request, host, port))
+  loop.run_forever()
 
 def stop():
   loop.stop()
 
 def close():
   loop.close()
-

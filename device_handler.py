@@ -170,8 +170,7 @@ def delete_device(device_id):
             for feedtime in device.feedtimes:
                 db.session.delete(feedtime)
                 # Assuming each feedtime has an associated portion, delete it
-
-
+                
             # Delete the device itself
             db.session.delete(device)
             db.session.commit()
@@ -186,7 +185,7 @@ def delete_device(device_id):
 
 ###### Add feed times ######
 
-@device_handler_bp.route('/add_feedtime<int:device_id>', methods=['POST'])
+@device_handler_bp.route('/add_feedtime/<int:device_id>', methods=['POST'])
 def add_feedtime(device_id: any):
     form = AddFeedTimeForm()
     if form.validate_on_submit():
@@ -222,19 +221,21 @@ def add_feedtime(device_id: any):
 @device_handler_bp.route('/delete_feedtime/<int:feedtime_id>', methods=['POST'])
 def delete_feedtime(feedtime_id):
     feedtime = FeedTime.query.get(feedtime_id)
-    
-    if not feedtime:
-        return jsonify({'success': False, 'message': 'Feed time not found!'})
 
-    try:
-        db.session.delete(feedtime)
-        db.session.commit()
-        return jsonify({'success': True, 'message': 'Feed time deleted successfully!'})
-    except SQLAlchemyError as e:
-        db.session.rollback()  # Rollback the transaction in case of a database error
-        # You can also log the error for debugging purposes
-        print(f'Database error: {str(e)}')
-        return jsonify({'success': False, 'message': 'Database error occurred. Please try again later.'})
+    if feedtime:
+        try:
+            db.session.delete(feedtime)
+            db.session.commit()
+            flash('Feed time deleted successfully!', 'success')
+        except SQLAlchemyError as e:
+            db.session.rollback()  # Rollback the transaction in case of a database error
+            # You can also log the error for debugging purposes
+            print(f'Database error: {str(e)}')
+            flash('Database error occurred. Please try again later.', 'error')
+    else:
+        flash('Feed time not found!', 'error')
+
+    return redirect(url_for('dashboard'))
 
 
 ### Updating feed times ###

@@ -11,50 +11,51 @@
     {% include './header.html' %}
 
     <main>
+        <div  class="add-device">
+            {% block content %}
+            <h1>Add a New Device</h1>
+            <form method="post" id="combined-form">
+                {{ form.hidden_tag() }}
 
-        {% block content %}
-        <h1>Add a New Device</h1>
-        <form method="post" id="combined-form">
-            {{ form.hidden_tag() }}
-
-            <div>
-                {{ form.nickname.label }}<br>
-                {{ form.nickname() }}
-            </div>
-            <div>
-                {{ form.device_type.label }}<br>
-                {{ form.device_type() }}
-            </div>
-
-            <div id="time-entries-container">
-                {% for feedtime in form.feedtimes %}
-                <div class="time-container">
-                    {{ feedtime.label }} {{ feedtime() }}
-                    {% if feedtime.minutes %}  {# Check if the minutes attribute exists #}
-                        {{ feedtime.minutes.label }} {{ feedtime.minutes() }}
-                    {% endif %}
-                    {% if feedtime.ampm %}  {# Check if the ampm attribute exists #}
-                        {{ feedtime.ampm.label }} {{ feedtime.ampm() }}
-                    {% endif %}
-                    <!-- Portions dropdown menu -->
-                    <label for="portions-{{ loop.index0 }}">Portions:</label>
-                    <select name="portions-{{ loop.index0 }}">
-                        {% for portion in range(1, 13) %}
-                            <option value="{{ portion * 0.5 }}">{{ portion * 0.5 }}</option>
-                        {% endfor %}
-                    </select>
-
+                <div>
+                    {{ form.nickname.label }}<br>
+                    {{ form.nickname() }}
                 </div>
-                {% endfor %}
-            </div>
+                <div>
+                    {{ form.device_type.label }}<br>
+                    {{ form.device_type() }}
+                </div>
 
-            <button id="addTimeEntryButton" type="button">Add Another Feed Time</button>
+                <div id="time-entries-container">
+                    {% for feedtime in form.feedtimes %}
+                    <div class="time-container">
+                        {{ feedtime.label }} {{ feedtime() }}
+                        {% if feedtime.minutes %}  {# Check if the minutes attribute exists #}
+                            {{ feedtime.minutes.label }} {{ feedtime.minutes() }}
+                        {% endif %}
+                        {% if feedtime.ampm %}  {# Check if the ampm attribute exists #}
+                            {{ feedtime.ampm.label }} {{ feedtime.ampm() }}
+                        {% endif %}
+                        <!-- Portions dropdown menu -->
+                        <label for="portions-{{ loop.index0 }}">Portions:</label>
+                        <select name="portions-{{ loop.index0 }}">
+                            {% for portion in range(1, 13) %}
+                                <option value="{{ portion * 1 }}">{{ portion * 1 }}</option>
+                            {% endfor %}
+                        </select>
 
-            <div>
-                {{ form.submit() }}
-            </div>
-        </form>
-        {% endblock %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <button id="addTimeEntryButton" type="button">Add Another Feed Time</button>
+
+                <div>
+                    {{ form.submit() }}
+                </div>
+            </form>
+            {% endblock %}
+        </div>
     </main>
 
     <script>

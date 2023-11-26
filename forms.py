@@ -1,7 +1,9 @@
 #!/usr/bin/python3
+#forms.py
+
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, PasswordField, SubmitField, ValidationError, SelectField, TimeField, FieldList, FormField
-from wtforms.validators import DataRequired, Email, EqualTo, Length
+from wtforms import StringField, IntegerField, PasswordField, SubmitField, ValidationError, SelectField, TimeField, FieldList, FormField, FloatField
+from wtforms.validators import DataRequired, Email, EqualTo, Length, NumberRange
 from wtforms.widgets import Input
 from models import User
 
@@ -44,15 +46,6 @@ class EditPetForm(FlaskForm):
     # Device Forms
     #######################################
 
-#class TimeInput(Input):
-#    def __init__(self):
-#        super().__init__()
-#
-#    def __call__(self, field, **kwargs):
-#        format = '%I:%M %p'  # Set the format for 12-hour time with AM/PM
-#        if field.data:
-#            field.data = field.data.strftime(format)
-#        return super().__call__(field, **kwargs)
 
 class AddDeviceForm(FlaskForm):
     nickname = StringField('Nickname:', validators=[DataRequired(), Length(max=50)])
@@ -61,15 +54,27 @@ class AddDeviceForm(FlaskForm):
     submit = SubmitField('Add Device')
     
 class AddFeedTimeForm(FlaskForm):
-    time = TimeField('Feed Time:')
-    #am_pm = SelectField('AM/PM:', choices=[('AM', 'AM'), ('PM', 'PM')])
-    submit = SubmitField('Add Feed Time')
+    hours = SelectField('Hours', choices=[(str(i), str(i)) for i in range(1, 13)])
+    minutes = SelectField('Minutes', choices=[(str(i).zfill(2), str(i).zfill(2)) for i in range(60)])
+    ampm = SelectField('AM/PM', choices=[('AM', 'AM'), ('PM', 'PM')])
+    
+
+class NewDeviceForm(FlaskForm):
+    nickname = StringField('Nickname:', validators=[DataRequired(), Length(max=50)])
+    device_type = SelectField('Device Type:', choices=["Pet Feeder", "Pet Cam", "E-Collar"])
+    feedtimes = FieldList(TimeField('Feed Time:', format='%H:%M'), min_entries=1)
+    portions = FieldList(FloatField('Portions:', validators=[DataRequired(), NumberRange(min=0.5, max=6)]), min_entries=1)
+    submit = SubmitField('Add Device')
     
 class EditDeviceForm(FlaskForm):
-    nickname = StringField('nickname', validators=[DataRequired(), Length(max=50)])
-    device_type = SelectField('device_options', choices=["Pet Feeder", "Pet Cam", "E-Collar"])
-    feedtimes = FieldList(FormField(AddFeedTimeForm))
+    nickname = StringField('Nickname:', validators=[DataRequired(), Length(max=50)])
+    device_type = SelectField('Device Type:', choices=["Pet Feeder", "Pet Cam", "E-Collar"])
+    feedtimes = FieldList(FormField(AddFeedTimeForm), min_entries=1)
     submit = SubmitField('Update')
+
+    def add_feed_time(self):
+        feed_time_form = AddFeedTimeForm()
+        self.feedtimes.append_entry(feed_time_form)
 
 class EditFeedTimeForm(FlaskForm):
     time = TimeField('Feed Time:')
