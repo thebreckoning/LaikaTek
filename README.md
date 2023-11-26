@@ -29,16 +29,6 @@ sudo docker-compose down # Shuts down the docker containers. Adding --remove-orp
 sudo docker ps # Lists running docker containers. Adding the -a flag shows all containers including those that are not currently running.\
 
 
-# Key vault 
-Keys will be used to secure passwords used within the app for connection strings.
-
-1. create a key vault
-2. create a Role Assignment under Access control
-    Access Control(IAM) > Role Assignments > Add
-3. Update the keymaster.py file with appropriate information for your
-
-More informtion  on Azure Key Vaults: https://learn.microsoft.com/en-us/cli/azure/keyvault?view=azure-cli-latest&WT.mc_id=Portal-Microsoft_Azure_KeyVault
-
 # Completed items
 - Built flask web app framework and templates
 - Set up basic CSS styling
@@ -46,9 +36,9 @@ More informtion  on Azure Key Vaults: https://learn.microsoft.com/en-us/cli/azur
 - Launched the app successfully in the Docker environment with unsecure database connection
 - Tested core app functions such as: new user creation, login, adding/editing a pet, and adding/editing a device
 - Establish IoT connection between the web app and device
-- Rotate motor
-- receive updates from web app
-- Setting up Mosquito MQTT broker
+- Instructions from the app on when to dispense are recieved on the device via MQTT message
+- Sensor information successfully delivered from the device to the web application.
+- Set up LCD screen to display time on device
 
 # To Do
 ### Web App
@@ -58,15 +48,7 @@ More informtion  on Azure Key Vaults: https://learn.microsoft.com/en-us/cli/azur
 - Deploy completed application to cloud environment
 - Final testing
 
-### Micropython functions to build
-- read food level sensor
-
-
-# Currently working on
-- Getting the Docker app to authenticate to the Azure Key vault
-- Establishing a secure database connection using Azure keys
-
-
 # Installation
 
-Fork the code over to your local machine and run sudo docker-compose up --build
+1. Fork the code over to a server running docker and run sudo docker-compose up --build
+
