@@ -29,14 +29,14 @@ A "smart" dog feeder that uses a web application to add and store information ab
 - 5V 4-Phase Stepper Step Motor + Driver Board ULN2003 with Drive Test Module
 - HC-SR04 Ultrasonic Module Distance Measuring Transducer Sensor
 
-  ### Software
-  - VSCode
-  - Thonny
-  - Fusion 360
-  - Ultimaker Cura
-  - ChatGPT
-  - OpenArt AI
-  - 
+### Software
+- VSCode
+- Thonny
+- Fusion 360
+- Ultimaker Cura
+- ChatGPT
+- OpenArt AI
+    
 
 # Helpful Docker commands
 
