@@ -1,10 +1,10 @@
 # Fair warning, I am still learning all the technologies involved in this project. 
 
 # LaikaTek
-A "smart" dog feeder that uses a web application to add and store information about your pets, and the devices assigned to your pets. The device itself is controlled by a Raspberry Pi Pico W running MicroPython cfunctions. Instructions such as feeding times are sent from the web app to the device and sensor information is sent back to the web app tobe displayed for the user. The application uses the Flask framework with MariaDB running in a Docker muilti-container environment.
+A "smart" dog feeder that uses a web application to add and store information about your pets, and the devices assigned to your pets. The device itself is controlled by a Raspberry Pi Pico W running MicroPython cfunctions. Instructions such as feeding times are sent from the web app to the device and sensor information is sent back to the web app tobe displayed for the user. The application uses the Flask framework with MariaDB running in a Docker muilti-container environment. 
 
 # Technologies used
-###Languages
+### Languages
 - Python
 - MicroPython
 - HTML
@@ -63,6 +63,8 @@ sudo docker ps # Lists running docker containers. Adding the -a flag shows all c
 - Refine and secure user sessions (i.e. set session durration)
 - Separate functions in the app.py file into separate files
 - Clean up unused functions and libraries
+- Re-design dispenser mechanism to use an auger
+- Add 3D print files to repository
   
 
 
